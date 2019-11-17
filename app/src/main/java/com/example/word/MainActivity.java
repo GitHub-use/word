@@ -1,5 +1,9 @@
 package com.example.word;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -11,6 +15,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,13 +27,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        final Uri uri_user = Uri.parse("content://com.example.word/word");
+        final ContentValues values = new ContentValues();
         FloatingActionButton fab = findViewById(R.id.fab);
+        final View button_insert = findViewById(R.id.button_insert);
+        final EditText edittext_en = findViewById(R.id.edittext_en);
+        final EditText edittext_ch = findViewById(R.id.edittext_ch);
+        final ContentResolver resolver = getContentResolver();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Cursor cursor = resolver.query(uri_user,new String[]{"id","en","ch"},null,null,null);
+                while(cursor.moveToNext()){
+                    System.out.println(cursor.getInt(0)+cursor.getString(1)+cursor.getString(2));
+                }
+                Toast.makeText(MainActivity.this,"finish",Toast.LENGTH_SHORT).show();
+            }
+        });
+        button_insert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this,"onClick",Toast.LENGTH_SHORT).show();
+                values.clear();
+                values.put("en",edittext_en.getText().toString());
+                values.put("ch",edittext_ch.getText().toString());
+                resolver.insert(uri_user,values);
             }
         });
     }
