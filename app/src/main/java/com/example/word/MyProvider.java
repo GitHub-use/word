@@ -55,7 +55,9 @@ public class MyProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+        String table = getTableName(uri);
+
+        return dp.delete(table,s,strings);
     }
 
     @Override
