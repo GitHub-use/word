@@ -98,7 +98,49 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_setting) {
+            final EditText edittext_find = new EditText(MainActivity.this);
+            new AlertDialog.Builder(MainActivity.this).setTitle("查找").setView(edittext_find).setPositiveButton("查找", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    ContentResolver resolver = getContentResolver();
+                    Cursor cursor =  resolver.query(uri_user,new String[]{"id","en","ch"},"en like ?",new String[]{edittext_find.getText().toString()+"%"},null);
+                    List<word> wordList = new ArrayList<word>();
+                    while (cursor.moveToNext()){
+                        word word = new word();
+                        word.setId(cursor.getInt(0));
+                        word.setEn(cursor.getString(1));
+                        word.setCh(cursor.getString(2));
+                        wordList.add(word);
+                    }
+                    WordAdapter wordAdapter = new WordAdapter(MainActivity.this,R.layout.word_item,wordList);
+                    ListView listView = findViewById(R.id.content_listview);
+                    listView.setAdapter(wordAdapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            word word=(word)adapterView.getItemAtPosition(i);
+                            Toast.makeText(MainActivity.this, word.getEn(),Toast.LENGTH_SHORT).show();
+                            MyDialog myDialog=new MyDialog(MainActivity.this,word);
+                            myDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialogInterface) {
+                                    init();
+                                }
+                            });
+                            myDialog.show();
+                        }
+                    });
+                }
+            }).show();
             return true;
+        }
+
+        if(id == R.id.action_help){
+            new AlertDialog.Builder(MainActivity.this).setTitle("帮助").setMessage("这里是帮助").show();
+        }
+
+        if(id == R.id.action_refresh){
+            init();
         }
 
         return super.onOptionsItemSelected(item);
@@ -122,8 +164,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 word word=(word)adapterView.getItemAtPosition(i);
-                Toast.makeText(MainActivity.this, word.getEn(),Toast.LENGTH_SHORT).show();
-                new MyDialog(MainActivity.this,word).show();
+                MyDialog myDialog=new MyDialog(MainActivity.this,word);
+                myDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        init();
+                    }
+                });
+                myDialog.show();
             }
         });
     }

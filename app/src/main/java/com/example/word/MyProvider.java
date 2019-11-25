@@ -62,7 +62,8 @@ public class MyProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+        String table = getTableName(uri);
+        return dp.update(table,contentValues,s,strings);
     }
 
     private String getTableName(Uri uri){
