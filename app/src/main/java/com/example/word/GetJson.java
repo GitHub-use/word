@@ -51,7 +51,9 @@ public class GetJson {
         url=url+"salt="+String.valueOf(time)+"&";
         url=url+"sign="+getDigest("4eac84ad7ddbb253"+truncate(q)+String.valueOf(time)+String.valueOf(time/1000)+"qpjHp2BO6GgGRsZGOGmPCVcsOp0hfu8r")+"&";
         url=url+"signType="+"v3"+"&";
-        url=url+"curtime="+String.valueOf(time/1000);
+        url=url+"curtime="+String.valueOf(time/1000)+"&";
+        url=url+"ext="+"mp3"+"&";
+        url=url+"voice="+"0";
         return url;
     }
 

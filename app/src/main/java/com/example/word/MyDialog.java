@@ -6,37 +6,32 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+
+import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
+
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
+
+
+
 
 public class MyDialog extends Dialog {
     word word ;
-    TextView textView ;
+    WebView textView ;
+    String url_play=null;
+
     final Uri uri_user = Uri.parse("content://com.example.word/word");
     public MyDialog(Context context,word word1){
         super(context);
         word = word1;
     }
-
-    Handler han = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if(msg.what==1){
-                Bundle bundle = msg.getData();
-                textView.setText(bundle.getString("key"));
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,20 +81,29 @@ public class MyDialog extends Dialog {
                 }).setNegativeButton("取消",null).show();
             }
         });
-        new Thread(){
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void run() {
-                super.run();
 
-                String temp=GetJson.get(word.getEn(),"en","an");
-                Message message = new Message();
-                Bundle bundle = new Bundle();
-                bundle.putString("key",temp);
-                message.setData(bundle);
-                message.what = 1;
-                han.sendMessage(message);
+        findViewById(R.id.mydialog_play).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final MediaPlayer player = new MediaPlayer();
+                new Thread(){
+                    @Override
+                    public void run() {
+                        try{
+                        player.setDataSource("http://dict.youdao.com/dictvoice?audio="+word.getEn());
+                        player.prepareAsync();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
+                player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        player.start();
+                    }
+                });
             }
-        }.start();
+        });
     }
 }
