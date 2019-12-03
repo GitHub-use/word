@@ -15,9 +15,7 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
-        String temp=GetJson.get("cat","en","zh-CHS");
-        System.out.println(temp.lastIndexOf("http://openapi"));
-        System.out.println(temp.length());
-        System.out.println(temp.substring(temp.lastIndexOf("http://openapi"),temp.length()-2));
+        String temp=GetJson.get("dog" ,"en","zh-CHS");
+        System.out.println(temp);
     }
 }

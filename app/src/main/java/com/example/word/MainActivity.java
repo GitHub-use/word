@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -61,7 +62,10 @@ public class MainActivity extends AppCompatActivity {
                                 ContentValues values = new ContentValues();
                                 values.put("en",en);
                                 values.put("ch",ch);
-                                resolver.insert(uri_user,values);
+                                DBHelper db = new DBHelper(MainActivity.this);
+                                SQLiteDatabase temp = db.getWritableDatabase();
+                                temp.insert(DBHelper.TABLE_NAME_FIRST,null,values);
+//                                resolver.insert(uri_user,values);
                                 init();
                             }
                         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -102,8 +106,11 @@ public class MainActivity extends AppCompatActivity {
             new AlertDialog.Builder(MainActivity.this).setTitle("查找").setView(edittext_find).setPositiveButton("查找", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    ContentResolver resolver = getContentResolver();
-                    Cursor cursor =  resolver.query(uri_user,new String[]{"id","en","ch"},"en like ?",new String[]{edittext_find.getText().toString()+"%"},null);
+//                    ContentResolver resolver = getContentResolver();
+                    DBHelper db=new DBHelper(MainActivity.this);
+                    SQLiteDatabase resolver = db.getWritableDatabase();
+                    //Cursor cursor =  resolver.query(uri_user,new String[]{"id","en","ch"},"en like ?",new String[]{edittext_find.getText().toString()+"%"},null);
+                    Cursor cursor = resolver.query(DBHelper.TABLE_NAME_FIRST,new String[]{"id","en","ch"},"en like ?",new String[]{edittext_find.getText()+"%"},null,null,null);
                     List<word> wordList = new ArrayList<word>();
                     while (cursor.moveToNext()){
                         word word = new word();

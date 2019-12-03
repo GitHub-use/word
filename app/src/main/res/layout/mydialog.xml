@@ -32,7 +32,7 @@
         android:layout_below="@id/mydialog_textview_ch"
         android:background="#000000"
         android:id="@+id/mydialog_view"/>
-    <WebView
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/mydialog_view"
@@ -60,7 +60,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="更改"
+            android:text="发声"
             android:id="@+id/mydialog_play"/>
     </LinearLayout>
 
