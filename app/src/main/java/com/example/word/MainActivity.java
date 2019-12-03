@@ -155,8 +155,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void init(){
         List<word> wordList = new ArrayList<word>();
-        ContentResolver resolver = getContentResolver();
-        Cursor cursor = resolver.query(uri_user,new String[]{"id","en","ch"},null,null,null);
+//        ContentResolver resolver = getContentResolver();
+//        Cursor cursor = resolver.query(uri_user,new String[]{"id","en","ch"},null,null,null);
+        DBHelper dbHelper = new DBHelper(MainActivity.this);
+        SQLiteDatabase temp = dbHelper.getWritableDatabase();
+        Cursor cursor=temp.query(DBHelper.TABLE_NAME_FIRST,new String[]{"id","en","ch"},null,null,null,null,null);
         while (cursor.moveToNext()){
             word word = new word();
             word.setId(cursor.getInt(0));
